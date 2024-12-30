@@ -1,0 +1,356 @@
+"models":
+- "classname": |-
+    DogOwner
+  "code": |-
+    class DogOwner(Base):
+        __tablename__ = 'dog_owner'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String(50))
+        email = Column(String(100))
+  "description": |-
+    Represents a dog owner who registers for dog walking services.
+  "name": |-
+    DogOwner
+- "classname": |-
+    Dog
+  "code": |-
+    class Dog(Base):
+        __tablename__ = 'dog'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String(50))
+        breed = Column(String(50))
+        owner_id = Column(Integer, ForeignKey('dog_owner.id'))
+  "description": |-
+    Represents a dog under the care of a dog owner.
+  "name": |-
+    Dog
+- "classname": |-
+    Walker
+  "code": |-
+    class Walker(Base):
+        __tablename__ = 'walker'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String(50))
+        phone = Column(String(15))
+  "description": |-
+    Represents a person who provides dog walking services.
+  "name": |-
+    Walker
+- "classname": |-
+    Appointment
+  "code": |-
+    class Appointment(Base):
+        __tablename__ = 'appointment'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        dog_id = Column(Integer, ForeignKey('dog.id'))
+        walker_id = Column(Integer, ForeignKey('walker.id'))
+        date = Column(DateTime)
+  "description": |-
+    Represents an appointment for dog walking services.
+  "name": |-
+    Appointment
+- "classname": |-
+    Service
+  "code": |-
+    class Service(Base):
+        __tablename__ = 'service'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        service_type = Column(String(50))
+        description = Column(String(255))
+        price = Column(Float)
+  "description": |-
+    Represents a type of dog walking service offered.
+  "name": |-
+    Service
+- "classname": |-
+    AppointmentService
+  "code": |-
+    class AppointmentService(Base):
+        __tablename__ = 'appointment_service'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        appointment_id = Column(Integer, ForeignKey('appointment.id'))
+        service_id = Column(Integer, ForeignKey('service.id'))
+  "description": |-
+    Associates services with specific appointments.
+  "name": |-
+    AppointmentService
+- "classname": |-
+    Payment
+  "code": |-
+    class Payment(Base):
+        __tablename__ = 'payment'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        amount = Column(Float)
+        date = Column(DateTime)
+        method = Column(String(50))
+        appointment_id = Column(Integer, ForeignKey('appointment.id'))
+  "description": |-
+    Represents a payment made for dog walking services.
+  "name": |-
+    Payment
+- "classname": |-
+    Invoice
+  "code": |-
+    class Invoice(Base):
+        __tablename__ = 'invoice'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        payment_id = Column(Integer, ForeignKey('payment.id'))
+        amount_due = Column(Float)
+        date_issued = Column(DateTime)
+  "description": |-
+    Represents an invoice for an appointment's services and payments.
+  "name": |-
+    Invoice
+- "classname": |-
+    WalkerAvailability
+  "code": |-
+    class WalkerAvailability(Base):
+        __tablename__ = 'walker_availability'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        walker_id = Column(Integer, ForeignKey('walker.id'))
+        date = Column(Date)
+        available = Column(Boolean)
+  "description": |-
+    Stores the availability of walkers on specific dates.
+  "name": |-
+    WalkerAvailability
+- "classname": |-
+    AppointmentReview
+  "code": |-
+    class AppointmentReview(Base):
+        __tablename__ = 'appointment_review'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        appointment_id = Column(Integer, ForeignKey('appointment.id'))
+        rating = Column(Integer)
+        comment = Column(String(255))
+  "description": |-
+    Represents a review left for an appointment.
+  "name": |-
+    AppointmentReview
+- "classname": |-
+    Discount
+  "code": |-
+    class Discount(Base):
+        __tablename__ = 'discount'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        code = Column(String(20))
+        percentage = Column(Float)
+        description = Column(String(255))
+  "description": |-
+    Represents discount codes available for use.
+  "name": |-
+    Discount
+- "classname": |-
+    AppointmentDiscount
+  "code": |-
+    class AppointmentDiscount(Base):
+        __tablename__ = 'appointment_discount'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        appointment_id = Column(Integer, ForeignKey('appointment.id'))
+        discount_id = Column(Integer, ForeignKey('discount.id'))
+  "description": |-
+    Associates discounts applied to appointments.
+  "name": |-
+    AppointmentDiscount
+"name": |-
+  Canine Concierge
+"rules":
+- "code": |-
+    derive(Invoice.amount_due, lambda row: model_related_amount(row, Payment.amount))
+  "description": |-
+    Calculate the total payment amount for each invoice.
+  "entity": |-
+    Invoice
+  "name": |-
+    Total Payment for Invoices
+  "use_case": |-
+    Dog Walking Business with payment processing
+- "code": |-
+    count(AppointmentService)
+  "description": |-
+    Count the number of dogs serviced in an appointment.
+  "entity": |-
+    Appointment
+  "name": |-
+    Number of Dogs Serviced
+  "use_case": |-
+    Dog Walking Business with payment processing
+"test_data": |-
+  Test data is provided as Python object initializations and as SQL inserts for SQLite.
+"test_data_rows":
+- "code": |-
+    dog_owner_1 = DogOwner(name="Alice Walker", email="alice@example.com")
+  "test_data_row_variable": |-
+    dog_owner_1
+- "code": |-
+    dog_owner_2 = DogOwner(name="Bob Smith", email="bob@example.com")
+  "test_data_row_variable": |-
+    dog_owner_2
+- "code": |-
+    dog_owner_3 = DogOwner(name="Charlie Brown", email="charlie@example.com")
+  "test_data_row_variable": |-
+    dog_owner_3
+- "code": |-
+    dog_owner_4 = DogOwner(name="Diana Prince", email="diana@example.com")
+  "test_data_row_variable": |-
+    dog_owner_4
+- "code": |-
+    dog_1 = Dog(name="Rover", breed="Labrador", owner_id=1)
+  "test_data_row_variable": |-
+    dog_1
+- "code": |-
+    dog_2 = Dog(name="Max", breed="Golden Retriever", owner_id=2)
+  "test_data_row_variable": |-
+    dog_2
+- "code": |-
+    dog_3 = Dog(name="Buddy", breed="Beagle", owner_id=3)
+  "test_data_row_variable": |-
+    dog_3
+- "code": |-
+    dog_4 = Dog(name="Luna", breed="Poodle", owner_id=4)
+  "test_data_row_variable": |-
+    dog_4
+- "code": |-
+    walker_1 = Walker(name="Jake Park", phone="123-456-7890")
+  "test_data_row_variable": |-
+    walker_1
+- "code": |-
+    walker_2 = Walker(name="Ella Rose", phone="234-567-8901")
+  "test_data_row_variable": |-
+    walker_2
+- "code": |-
+    appointment_1 = Appointment(dog_id=1, walker_id=1, date=datetime(2023, 10, 20, 10, 0))
+  "test_data_row_variable": |-
+    appointment_1
+- "code": |-
+    appointment_2 = Appointment(dog_id=2, walker_id=2, date=datetime(2023, 10, 21, 12, 0))
+  "test_data_row_variable": |-
+    appointment_2
+- "code": |-
+    service_1 = Service(service_type="Regular Walk", description="30-minute walk", price=15.00)
+  "test_data_row_variable": |-
+    service_1
+- "code": |-
+    service_2 = Service(service_type="Extended Walk", description="60-minute walk", price=25.00)
+  "test_data_row_variable": |-
+    service_2
+- "code": |-
+    appointment_service_1 = AppointmentService(appointment_id=1, service_id=1)
+  "test_data_row_variable": |-
+    appointment_service_1
+- "code": |-
+    appointment_service_2 = AppointmentService(appointment_id=2, service_id=2)
+  "test_data_row_variable": |-
+    appointment_service_2
+- "code": |-
+    payment_1 = Payment(amount=15.00, date=datetime(2023, 10, 20, 11, 0), method="Credit Card", appointment_id=1)
+  "test_data_row_variable": |-
+    payment_1
+- "code": |-
+    payment_2 = Payment(amount=25.00, date=datetime(2023, 10, 21, 13, 0), method="Cash", appointment_id=2)
+  "test_data_row_variable": |-
+    payment_2
+- "code": |-
+    invoice_1 = Invoice(payment_id=1, amount_due=15.00, date_issued=datetime(2023, 10, 22))
+  "test_data_row_variable": |-
+    invoice_1
+- "code": |-
+    invoice_2 = Invoice(payment_id=2, amount_due=25.00, date_issued=datetime(2023, 10, 23))
+  "test_data_row_variable": |-
+    invoice_2
+- "code": |-
+    walker_availability_1 = WalkerAvailability(walker_id=1, date=date(2023, 10, 20), available=True)
+  "test_data_row_variable": |-
+    walker_availability_1
+- "code": |-
+    walker_availability_2 = WalkerAvailability(walker_id=2, date=date(2023, 10, 21), available=True)
+  "test_data_row_variable": |-
+    walker_availability_2
+- "code": |-
+    appointment_review_1 = AppointmentReview(appointment_id=1, rating=5, comment="Great service!")
+  "test_data_row_variable": |-
+    appointment_review_1
+- "code": |-
+    appointment_review_2 = AppointmentReview(appointment_id=2, rating=4, comment="Good walk, but a bit late.")
+  "test_data_row_variable": |-
+    appointment_review_2
+- "code": |-
+    discount_1 = Discount(code="WELCOME10", percentage=10.0, description="10% off your first appointment")
+  "test_data_row_variable": |-
+    discount_1
+- "code": |-
+    discount_2 = Discount(code="SUMMERFUN", percentage=15.0, description="15% off during summer")
+  "test_data_row_variable": |-
+    discount_2
+- "code": |-
+    appointment_discount_1 = AppointmentDiscount(appointment_id=1, discount_id=1)
+  "test_data_row_variable": |-
+    appointment_discount_1
+- "code": |-
+    appointment_discount_2 = AppointmentDiscount(appointment_id=2, discount_id=2)
+  "test_data_row_variable": |-
+    appointment_discount_2
+"test_data_sqlite": |-
+  INSERT INTO dog_owner (name, email) VALUES
+  ("Alice Walker", "alice@example.com"),
+  ("Bob Smith", "bob@example.com"),
+  ("Charlie Brown", "charlie@example.com"),
+  ("Diana Prince", "diana@example.com");
+
+  INSERT INTO dog (name, breed, owner_id) VALUES
+  ("Rover", "Labrador", 1),
+  ("Max", "Golden Retriever", 2),
+  ("Buddy", "Beagle", 3),
+  ("Luna", "Poodle", 4);
+
+  INSERT INTO walker (name, phone) VALUES
+  ("Jake Park", "123-456-7890"),
+  ("Ella Rose", "234-567-8901");
+
+  INSERT INTO appointment (dog_id, walker_id, date) VALUES
+  (1, 1, '2023-10-20 10:00:00'),
+  (2, 2, '2023-10-21 12:00:00');
+
+  INSERT INTO service (service_type, description, price) VALUES
+  ("Regular Walk", "30-minute walk", 15.0),
+  ("Extended Walk", "60-minute walk", 25.0);
+
+  INSERT INTO appointment_service (appointment_id, service_id) VALUES
+  (1, 1),
+  (2, 2);
+
+  INSERT INTO payment (amount, date, method, appointment_id) VALUES
+  (15.0, '2023-10-20 11:00:00', "Credit Card", 1),
+  (25.0, '2023-10-21 13:00:00', "Cash", 2);
+
+  INSERT INTO invoice (payment_id, amount_due, date_issued) VALUES
+  (1, 15.0, '2023-10-22'),
+  (2, 25.0, '2023-10-23');
+
+  INSERT INTO walker_availability (walker_id, date, available) VALUES
+  (1, '2023-10-20', 1),
+  (2, '2023-10-21', 1);
+
+  INSERT INTO appointment_review (appointment_id, rating, comment) VALUES
+  (1, 5, "Great service!"),
+  (2, 4, "Good walk, but a bit late.");
+
+  INSERT INTO discount (code, percentage, description) VALUES
+  ("WELCOME10", 10.0, "10% off your first appointment"),
+  ("SUMMERFUN", 15.0, "15% off during summer");
+
+  INSERT INTO appointment_discount (appointment_id, discount_id) VALUES
+  (1, 1),
+  (2, 2);

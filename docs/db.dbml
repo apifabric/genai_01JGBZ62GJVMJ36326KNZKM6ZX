@@ -1,0 +1,116 @@
+// Copy this text, paste to https://dbdiagram.io/d
+// Or, https://databasediagram.com/app
+// Or, view in VSCode with extension: "DBML Live Preview"
+
+Project DBML {
+  Note: '''
+Appointment: Represents an appointment for dog walking services.
+Dog: Represents a dog under the care of a dog owner.
+Walker: Represents a person who provides dog walking services.
+AppointmentDiscount: Associates discounts applied to appointments.
+Discount: Represents discount codes available for use.
+AppointmentReview: Represents a review left for an appointment.
+AppointmentService: Associates services with specific appointments.
+Service: Represents a type of dog walking service offered.
+DogOwner: Represents a dog owner who registers for dog walking services.
+Invoice: Represents an invoice for an appointment's services and payments.
+Payment: Represents a payment made for dog walking services.
+WalkerAvailability: Stores the availability of walkers on specific dates.
+'''
+}
+
+Table Appointment {
+    id INTEGER [primary key]
+    dog_id INTEGER 
+    walker_id INTEGER 
+    date DATETIME 
+    }
+
+Table Dog {
+    id INTEGER [primary key]
+    name VARCHAR(50) 
+    breed VARCHAR(50) 
+    owner_id INTEGER 
+    }
+
+Table Walker {
+    id INTEGER [primary key]
+    name VARCHAR(50) 
+    phone VARCHAR(15) 
+    }
+
+Table AppointmentDiscount {
+    id INTEGER [primary key]
+    appointment_id INTEGER 
+    discount_id INTEGER 
+    }
+
+Table Discount {
+    id INTEGER [primary key]
+    code VARCHAR(20) 
+    percentage FLOAT 
+    description VARCHAR(255) 
+    }
+
+Table AppointmentReview {
+    id INTEGER [primary key]
+    appointment_id INTEGER 
+    rating INTEGER 
+    comment VARCHAR(255) 
+    }
+
+Table AppointmentService {
+    id INTEGER [primary key]
+    appointment_id INTEGER 
+    service_id INTEGER 
+    }
+
+Table Service {
+    id INTEGER [primary key]
+    service_type VARCHAR(50) 
+    description VARCHAR(255) 
+    price FLOAT 
+    }
+
+Table DogOwner {
+    id INTEGER [primary key]
+    name VARCHAR(50) 
+    email VARCHAR(100) 
+    }
+
+Table Invoice {
+    id INTEGER [primary key]
+    payment_id INTEGER 
+    amount_due FLOAT 
+    date_issued DATETIME 
+    }
+
+Table Payment {
+    id INTEGER [primary key]
+    amount FLOAT 
+    date DATETIME 
+    method VARCHAR(50) 
+    appointment_id INTEGER 
+    }
+
+Table WalkerAvailability {
+    id INTEGER [primary key]
+    walker_id INTEGER 
+    date DATE 
+    available BOOLEAN 
+    }
+
+
+
+// Relationships
+    Ref: Appointment.(dog_id) < Dog.(id)
+    Ref: Appointment.(walker_id) < Walker.(id)
+    Ref: Dog.(owner_id) < DogOwner.(id)
+    Ref: AppointmentDiscount.(appointment_id) < Appointment.(id)
+    Ref: AppointmentDiscount.(discount_id) < Discount.(id)
+    Ref: AppointmentReview.(appointment_id) < Appointment.(id)
+    Ref: AppointmentService.(appointment_id) < Appointment.(id)
+    Ref: AppointmentService.(service_id) < Service.(id)
+    Ref: Invoice.(payment_id) < Payment.(id)
+    Ref: Payment.(appointment_id) < Appointment.(id)
+    Ref: WalkerAvailability.(walker_id) < Walker.(id)

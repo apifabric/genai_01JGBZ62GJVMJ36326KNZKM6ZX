@@ -1,0 +1,322 @@
+about:
+  date: December 30, 2024 14:24:11
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 11
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  Appointment:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: dog_id
+    - name: walker_id
+    - name: date
+      type: DATETIME
+    description: Represents an appointment for dog walking services.
+    info_list: Represents an appointment for dog walking services.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - appointment_id
+      name: AppointmentDiscountList
+      resource: AppointmentDiscount
+    - direction: tomany
+      fks:
+      - appointment_id
+      name: AppointmentReviewList
+      resource: AppointmentReview
+    - direction: tomany
+      fks:
+      - appointment_id
+      name: AppointmentServiceList
+      resource: AppointmentService
+    - direction: tomany
+      fks:
+      - appointment_id
+      name: PaymentList
+      resource: Payment
+    - direction: toone
+      fks:
+      - dog_id
+      name: dog
+      resource: Dog
+    - direction: toone
+      fks:
+      - walker_id
+      name: walker
+      resource: Walker
+    type: Appointment
+    user_key: id
+  AppointmentDiscount:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: appointment_id
+    - name: discount_id
+    description: Associates discounts applied to appointments.
+    info_list: Associates discounts applied to appointments.
+    tab_groups:
+    - direction: toone
+      fks:
+      - appointment_id
+      name: appointment
+      resource: Appointment
+    - direction: toone
+      fks:
+      - discount_id
+      name: discount
+      resource: Discount
+    type: AppointmentDiscount
+    user_key: id
+  AppointmentReview:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: appointment_id
+    - name: rating
+    - name: comment
+    description: Represents a review left for an appointment.
+    info_list: Represents a review left for an appointment.
+    tab_groups:
+    - direction: toone
+      fks:
+      - appointment_id
+      name: appointment
+      resource: Appointment
+    type: AppointmentReview
+    user_key: id
+  AppointmentService:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: appointment_id
+    - name: service_id
+    description: Associates services with specific appointments.
+    info_list: Associates services with specific appointments.
+    tab_groups:
+    - direction: toone
+      fks:
+      - appointment_id
+      name: appointment
+      resource: Appointment
+    - direction: toone
+      fks:
+      - service_id
+      name: service
+      resource: Service
+    type: AppointmentService
+    user_key: id
+  Discount:
+    attributes:
+    - label: ' description*'
+      name: description
+      search: true
+      sort: true
+    - name: code
+    - name: percentage
+    - name: id
+    description: Represents discount codes available for use.
+    info_list: Represents discount codes available for use.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - discount_id
+      name: AppointmentDiscountList
+      resource: AppointmentDiscount
+    type: Discount
+    user_key: description
+  Dog:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: owner_id
+    - name: id
+    - name: breed
+    description: Represents a dog under the care of a dog owner.
+    info_list: Represents a dog under the care of a dog owner.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - dog_id
+      name: AppointmentList
+      resource: Appointment
+    - direction: toone
+      fks:
+      - owner_id
+      name: owner
+      resource: DogOwner
+    type: Dog
+    user_key: name
+  DogOwner:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: email
+    - name: id
+    description: Represents a dog owner who registers for dog walking services.
+    info_list: Represents a dog owner who registers for dog walking services.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - owner_id
+      name: DogList
+      resource: Dog
+    type: DogOwner
+    user_key: name
+  Invoice:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: payment_id
+    - name: amount_due
+    - name: date_issued
+      type: DATETIME
+    description: Represents an invoice for an appointment's services and payments.
+    info_list: Represents an invoice for an appointment's services and payments.
+    tab_groups:
+    - direction: toone
+      fks:
+      - payment_id
+      name: payment
+      resource: Payment
+    type: Invoice
+    user_key: id
+  Payment:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: appointment_id
+    - name: amount
+    - name: date
+      type: DATETIME
+    - name: method
+    description: Represents a payment made for dog walking services.
+    info_list: Represents a payment made for dog walking services.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - payment_id
+      name: InvoiceList
+      resource: Invoice
+    - direction: toone
+      fks:
+      - appointment_id
+      name: appointment
+      resource: Appointment
+    type: Payment
+    user_key: id
+  Service:
+    attributes:
+    - label: ' description*'
+      name: description
+      search: true
+      sort: true
+    - name: service_type
+    - name: price
+    - name: id
+    description: Represents a type of dog walking service offered.
+    info_list: Represents a type of dog walking service offered.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - service_id
+      name: AppointmentServiceList
+      resource: AppointmentService
+    type: Service
+    user_key: description
+  Walker:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: phone
+    - name: id
+    description: Represents a person who provides dog walking services.
+    info_list: Represents a person who provides dog walking services.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - walker_id
+      name: AppointmentList
+      resource: Appointment
+    - direction: tomany
+      fks:
+      - walker_id
+      name: WalkerAvailabilityList
+      resource: WalkerAvailability
+    type: Walker
+    user_key: name
+  WalkerAvailability:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: walker_id
+    - name: date
+      type: DATE
+    - name: available
+      type: Boolean
+    description: Stores the availability of walkers on specific dates.
+    info_list: Stores the availability of walkers on specific dates.
+    tab_groups:
+    - direction: toone
+      fks:
+      - walker_id
+      name: walker
+      resource: Walker
+    type: WalkerAvailability
+    user_key: id
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'
